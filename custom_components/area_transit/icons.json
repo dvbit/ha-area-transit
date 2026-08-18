@@ -1,0 +1,29 @@
+{
+  "entity": {
+    "sensor": {
+      "last_transit": {
+        "default": "mdi:transit-connection-variant"
+      },
+      "direction": {
+        "default": "mdi:swap-horizontal",
+        "state": {
+          "in_to_out": "mdi:arrow-right-bold",
+          "out_to_in": "mdi:arrow-left-bold"
+        }
+      },
+      "transits_in_to_out": {
+        "default": "mdi:counter"
+      },
+      "transits_out_to_in": {
+        "default": "mdi:counter"
+      },
+      "occupancy": {
+        "default": "mdi:account-group"
+      }
+    }
+  },
+  "services": {
+    "reset_occupancy": "mdi:account-off",
+    "reset_counters": "mdi:restart"
+  }
+}

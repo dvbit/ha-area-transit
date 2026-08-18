@@ -1,0 +1,13 @@
+{
+  "domain": "area_transit",
+  "name": "Area Transit",
+  "codeowners": ["@dvbit"],
+  "config_flow": true,
+  "documentation": "https://github.com/dvbit/ha-area-transit",
+  "integration_type": "hub",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/dvbit/ha-area-transit/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "1.0.0"
+}

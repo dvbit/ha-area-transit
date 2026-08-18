@@ -1,0 +1,26 @@
+# Services exposed by Area Transit (SPEC.md section 5).
+# Both are entity services: they can be targeted at a single entity, at a gate
+# device (which resets every counter of that gate) or at a whole area.
+
+reset_occupancy:
+  target:
+    entity:
+      domain: sensor
+      integration: area_transit
+  fields:
+    value:
+      required: false
+      default: 0
+      example: 2
+      selector:
+        number:
+          min: 0
+          max: 1000
+          step: 1
+          mode: box
+
+reset_counters:
+  target:
+    entity:
+      domain: sensor
+      integration: area_transit

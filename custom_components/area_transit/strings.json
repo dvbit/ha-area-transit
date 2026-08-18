@@ -1,0 +1,152 @@
+{
+  "title": "Area Transit",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Area Transit",
+        "description": "Set the global option. Gates are added afterwards, from the integration page.",
+        "data": {
+          "inter_gate_window": "Inter-gate window"
+        },
+        "data_description": {
+          "inter_gate_window": "Maximum time between two transits through contiguous gates for them to be treated as a single journey (A to C via B)."
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Area Transit is already configured. Add a new gate to the existing entry."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Global options",
+        "data": {
+          "inter_gate_window": "Inter-gate window"
+        },
+        "data_description": {
+          "inter_gate_window": "Maximum time between two transits through contiguous gates for them to be treated as a single journey (A to C via B)."
+        }
+      }
+    }
+  },
+  "config_subentries": {
+    "gate": {
+      "entry_type": "Gate",
+      "initiate_flow": {
+        "user": "Add gate",
+        "reconfigure": "Reconfigure gate"
+      },
+      "step": {
+        "user": {
+          "title": "New gate",
+          "description": "A gate connects two areas. The transit is registered only when the sensors fire in order: area A, boundary (if configured), area B.",
+          "data": {
+            "name": "Name",
+            "area_in": "Area A",
+            "area_out": "Area B",
+            "sensor_in": "Motion sensor in area A",
+            "sensor_out": "Motion sensor in area B",
+            "sensor_boundary": "Boundary sensor",
+            "sequence_timeout": "Sequence timeout",
+            "cooldown": "Cooldown"
+          },
+          "data_description": {
+            "name": "Shown as the device name of the gate.",
+            "area_in": "Area on the A side of the gate.",
+            "area_out": "Area on the B side of the gate.",
+            "sensor_in": "Binary sensor covering area A next to the gate.",
+            "sensor_out": "Binary sensor covering area B next to the gate.",
+            "sensor_boundary": "Optional. Once configured it becomes mandatory in the sequence: without it no transit is registered.",
+            "sequence_timeout": "Maximum time between the first and the last sensor of the sequence.",
+            "cooldown": "Time the gate ignores new events after a registered transit, to avoid double counting."
+          }
+        },
+        "reconfigure": {
+          "title": "Edit gate",
+          "description": "A gate connects two areas. The transit is registered only when the sensors fire in order: area A, boundary (if configured), area B.",
+          "data": {
+            "name": "Name",
+            "area_in": "Area A",
+            "area_out": "Area B",
+            "sensor_in": "Motion sensor in area A",
+            "sensor_out": "Motion sensor in area B",
+            "sensor_boundary": "Boundary sensor",
+            "sequence_timeout": "Sequence timeout",
+            "cooldown": "Cooldown"
+          },
+          "data_description": {
+            "name": "Shown as the device name of the gate.",
+            "area_in": "Area on the A side of the gate.",
+            "area_out": "Area on the B side of the gate.",
+            "sensor_in": "Binary sensor covering area A next to the gate.",
+            "sensor_out": "Binary sensor covering area B next to the gate.",
+            "sensor_boundary": "Optional. Once configured it becomes mandatory in the sequence: without it no transit is registered.",
+            "sequence_timeout": "Maximum time between the first and the last sensor of the sequence.",
+            "cooldown": "Time the gate ignores new events after a registered transit, to avoid double counting."
+          }
+        }
+      },
+      "error": {
+        "same_area": "Area A and area B must be different.",
+        "duplicate_sensor": "Each sensor of a gate must be a different entity."
+      },
+      "abort": {
+        "reconfigure_successful": "Gate updated."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "last_transit": {
+        "name": "Last transit",
+        "state_attributes": {
+          "direction": {
+            "name": "Direction",
+            "state": {
+              "in_to_out": "A to B",
+              "out_to_in": "B to A"
+            }
+          },
+          "from_area": { "name": "From area" },
+          "to_area": { "name": "To area" },
+          "duration": { "name": "Duration" },
+          "sensors": { "name": "Sensors" },
+          "boundary_used": { "name": "Boundary used" }
+        }
+      },
+      "direction": {
+        "name": "Direction",
+        "state": {
+          "in_to_out": "A to B",
+          "out_to_in": "B to A"
+        }
+      },
+      "transits_in_to_out": {
+        "name": "Transits A to B"
+      },
+      "transits_out_to_in": {
+        "name": "Transits B to A"
+      },
+      "occupancy": {
+        "name": "Estimated occupancy"
+      }
+    }
+  },
+  "services": {
+    "reset_occupancy": {
+      "name": "Reset occupancy",
+      "description": "Sets the estimated occupancy of the targeted areas to a given value.",
+      "fields": {
+        "value": {
+          "name": "Value",
+          "description": "New occupancy value. Defaults to 0."
+        }
+      }
+    },
+    "reset_counters": {
+      "name": "Reset counters",
+      "description": "Resets the transit counters, the last transit and the direction of the targeted gates."
+    }
+  }
+}

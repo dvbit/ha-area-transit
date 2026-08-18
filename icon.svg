@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Area Transit">
+  <!-- Background -->
+  <rect width="256" height="256" rx="56" fill="#0F2A3F"/>
+
+  <!-- Area A (left) and Area B (right) -->
+  <rect x="26" y="60" width="80" height="136" rx="14" fill="#123A55" stroke="#2C7DA0" stroke-width="4"/>
+  <rect x="150" y="60" width="80" height="136" rx="14" fill="#123A55" stroke="#2C7DA0" stroke-width="4"/>
+
+  <!-- Boundary between the two areas -->
+  <line x1="128" y1="48" x2="128" y2="208" stroke="#41B3A2" stroke-width="6" stroke-linecap="round" stroke-dasharray="14 12"/>
+
+  <!-- Motion sensors: one per area, one on the boundary -->
+  <circle cx="66" cy="96" r="11" fill="#F2C14E"/>
+  <circle cx="190" cy="96" r="11" fill="#F2C14E"/>
+  <circle cx="128" cy="96" r="9" fill="#41B3A2"/>
+
+  <!-- Transit arrow, A to B -->
+  <path d="M52 154 H186" stroke="#F5F7FA" stroke-width="12" stroke-linecap="round"/>
+  <path d="M176 134 L212 154 L176 174 Z" fill="#F5F7FA"/>
+</svg>
