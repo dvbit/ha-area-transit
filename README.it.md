@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS custom"></a>
-  <img src="https://img.shields.io/badge/versione-1.0.0-blue.svg" alt="Versione 1.0.0">
+  <img src="https://img.shields.io/badge/versione-1.1.0-blue.svg" alt="Versione 1.1.0">
   <img src="https://img.shields.io/badge/Home%20Assistant-2025.6%2B-41BDF5.svg" alt="Home Assistant 2025.6+">
 </p>
 
@@ -90,6 +90,13 @@ Per ogni area monitorata (dispositivo = l'area):
 | Entità | Esempio | Descrizione |
 | --- | --- | --- |
 | Occupazione stimata | `sensor.soggiorno_occupazione_stimata` | Conteggio persone, `+1` in ingresso, `-1` in uscita, mai sotto zero |
+
+Sul dispositivo unico **Area Transit Hub** (uno per config entry, aggrega l'attività di tutti i varchi):
+
+| Entità | Esempio | Descrizione |
+| --- | --- | --- |
+| Ultimo percorso | `sensor.area_transit_hub_last_path` | Timestamp dell'ultimo percorso multi-varco completato. Attributi: `origin`, `destination`, `via`, `gates`, `duration` |
+| Transiti totali | `sensor.area_transit_hub_total_transits` | Transiti registrati su tutti i varchi, indipendentemente dalla direzione |
 
 Tutti i valori sopravvivono al riavvio di Home Assistant.
 

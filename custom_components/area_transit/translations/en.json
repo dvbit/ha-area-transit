@@ -140,6 +140,29 @@
       },
       "occupancy": {
         "name": "Estimated occupancy"
+      },
+      "last_path": {
+        "name": "Last path",
+        "state_attributes": {
+          "origin": {
+            "name": "Origin"
+          },
+          "destination": {
+            "name": "Destination"
+          },
+          "via": {
+            "name": "Via"
+          },
+          "gates": {
+            "name": "Gates"
+          },
+          "duration": {
+            "name": "Duration"
+          }
+        }
+      },
+      "total_transits": {
+        "name": "Total transits"
       }
     }
   },
@@ -156,7 +179,7 @@
     },
     "reset_counters": {
       "name": "Reset counters",
-      "description": "Resets the transit counters, the last transit and the direction of the targeted gates."
+      "description": "Resets the transit counters, the last transit and the direction of the targeted gates. Targeting the hub device resets the last path and the total transits counter."
     }
   }
 }

@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS custom"></a>
-  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="Version 1.0.0">
+  <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version 1.1.0">
   <img src="https://img.shields.io/badge/Home%20Assistant-2025.6%2B-41BDF5.svg" alt="Home Assistant 2025.6+">
 </p>
 
@@ -88,6 +88,13 @@ For each monitored area (device = the area):
 | Entity | Example | Description |
 | --- | --- | --- |
 | Estimated occupancy | `sensor.living_room_estimated_occupancy` | People count, `+1` on arrival, `-1` on departure, never below zero |
+
+On the single **Area Transit Hub** device (one per config entry, aggregates activity across every gate):
+
+| Entity | Example | Description |
+| --- | --- | --- |
+| Last path | `sensor.area_transit_hub_last_path` | Timestamp of the last completed multi-gate path. Attributes: `origin`, `destination`, `via`, `gates`, `duration` |
+| Total transits | `sensor.area_transit_hub_total_transits` | Transits registered across every gate, regardless of direction |
 
 All values survive a Home Assistant restart.
 

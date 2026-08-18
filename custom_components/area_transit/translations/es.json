@@ -140,6 +140,29 @@
       },
       "occupancy": {
         "name": "Ocupación estimada"
+      },
+      "last_path": {
+        "name": "Último recorrido",
+        "state_attributes": {
+          "origin": {
+            "name": "Origen"
+          },
+          "destination": {
+            "name": "Destino"
+          },
+          "via": {
+            "name": "Vía"
+          },
+          "gates": {
+            "name": "Pasos"
+          },
+          "duration": {
+            "name": "Duración"
+          }
+        }
+      },
+      "total_transits": {
+        "name": "Tránsitos totales"
       }
     }
   },
@@ -156,7 +179,7 @@
     },
     "reset_counters": {
       "name": "Restablecer contadores",
-      "description": "Restablece los contadores de tránsito, el último tránsito y la dirección de los pasos seleccionados."
+      "description": "Restablece los contadores de tránsito, el último tránsito y la dirección de los pasos seleccionados. Si se aplica al dispositivo hub, restablece el último recorrido y el contador de tránsitos totales."
     }
   }
 }

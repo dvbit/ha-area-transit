@@ -140,6 +140,29 @@
       },
       "occupancy": {
         "name": "Occupation estimée"
+      },
+      "last_path": {
+        "name": "Dernier trajet",
+        "state_attributes": {
+          "origin": {
+            "name": "Origine"
+          },
+          "destination": {
+            "name": "Destination"
+          },
+          "via": {
+            "name": "Via"
+          },
+          "gates": {
+            "name": "Passages"
+          },
+          "duration": {
+            "name": "Durée"
+          }
+        }
+      },
+      "total_transits": {
+        "name": "Transits totaux"
       }
     }
   },
@@ -156,7 +179,7 @@
     },
     "reset_counters": {
       "name": "Réinitialiser les compteurs",
-      "description": "Réinitialise les compteurs de transit, le dernier transit et la direction des passages ciblés."
+      "description": "Réinitialise les compteurs de transit, le dernier transit et la direction des passages ciblés. Si ciblé sur l'appareil hub, réinitialise le dernier trajet et le compteur de transits totaux."
     }
   }
 }

@@ -140,6 +140,29 @@
       },
       "occupancy": {
         "name": "Geschätzte Belegung"
+      },
+      "last_path": {
+        "name": "Letzte Wegstrecke",
+        "state_attributes": {
+          "origin": {
+            "name": "Ausgangspunkt"
+          },
+          "destination": {
+            "name": "Ziel"
+          },
+          "via": {
+            "name": "Über"
+          },
+          "gates": {
+            "name": "Übergänge"
+          },
+          "duration": {
+            "name": "Dauer"
+          }
+        }
+      },
+      "total_transits": {
+        "name": "Durchgänge gesamt"
       }
     }
   },
@@ -156,7 +179,7 @@
     },
     "reset_counters": {
       "name": "Zähler zurücksetzen",
-      "description": "Setzt die Durchgangszähler, den letzten Durchgang und die Richtung der ausgewählten Übergänge zurück."
+      "description": "Setzt die Durchgangszähler, den letzten Durchgang und die Richtung der ausgewählten Übergänge zurück. Am Hub-Gerät angewendet, setzt es die letzte Wegstrecke und den Gesamtzähler zurück."
     }
   }
 }

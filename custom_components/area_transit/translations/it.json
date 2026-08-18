@@ -140,6 +140,29 @@
       },
       "occupancy": {
         "name": "Occupazione stimata"
+      },
+      "last_path": {
+        "name": "Ultimo percorso",
+        "state_attributes": {
+          "origin": {
+            "name": "Origine"
+          },
+          "destination": {
+            "name": "Destinazione"
+          },
+          "via": {
+            "name": "Passando per"
+          },
+          "gates": {
+            "name": "Varchi"
+          },
+          "duration": {
+            "name": "Durata"
+          }
+        }
+      },
+      "total_transits": {
+        "name": "Transiti totali"
       }
     }
   },
@@ -156,7 +179,7 @@
     },
     "reset_counters": {
       "name": "Azzera contatori",
-      "description": "Azzera i contatori di transito, l'ultimo transito e la direzione dei varchi selezionati."
+      "description": "Azzera i contatori di transito, l'ultimo transito e la direzione dei varchi selezionati. Se applicato al device hub, azzera l'ultimo percorso e il contatore dei transiti totali."
     }
   }
 }
