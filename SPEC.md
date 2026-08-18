@@ -74,6 +74,13 @@ Per monitored area (device = the area):
 | --- | --- |
 | `sensor.<area>_estimated_occupancy` | Estimated people count, incremented and decremented by the transits, never negative |
 
+On the single hub device (one per config entry, aggregates activity across every gate):
+
+| Entity | Description |
+| --- | --- |
+| `sensor.area_transit_hub_last_path` | Timestamp of the last completed multi-gate path (SPEC 3), with origin, destination, via areas, gates and duration as attributes |
+| `sensor.area_transit_hub_total_transits` | Number of transits registered across every gate, regardless of direction |
+
 Every value is restored after a Home Assistant restart.
 
 ## 5. Services
@@ -81,9 +88,9 @@ Every value is restored after a Home Assistant restart.
 | Service | Effect |
 | --- | --- |
 | `area_transit.reset_occupancy` | Sets the occupancy of the targeted areas to `value` (default 0) |
-| `area_transit.reset_counters` | Resets the counters, the last transit and the direction of the targeted gates |
+| `area_transit.reset_counters` | Resets the counters, the last transit and the direction of the targeted gates. Targeting the hub device resets the last path and the total transits counter |
 
-Both are entity services: they accept an entity, a device or an area as target.
+Both are entity services: they accept an entity, a device (gate, area or hub) or an area as target.
 
 ## 6. Bus events
 

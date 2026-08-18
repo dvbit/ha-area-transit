@@ -1,6 +1,7 @@
 # Services exposed by Area Transit (SPEC.md section 5).
 # Both are entity services: they can be targeted at a single entity, at a gate
-# device (which resets every counter of that gate) or at a whole area.
+# device (which resets every counter of that gate), at a whole area, or at the
+# hub device (which resets the last path and the total transits counter).
 
 reset_occupancy:
   target:

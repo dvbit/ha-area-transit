@@ -11,6 +11,10 @@ per gate (device = the gate, owned by its subentry)
 per monitored area (device = the area)
     sensor.<area>_occupancy            estimated people count, never negative
 
+on the single hub device (one per config entry)
+    sensor.area_transit_hub_last_path       timestamp of the last completed path
+    sensor.area_transit_hub_total_transits  transits across every gate
+
 Every entity restores its value after a Home Assistant restart (SPEC 4), and
 exposes the reset services described in SPEC 5.
 """
@@ -36,33 +40,44 @@ from homeassistant.util import dt as dt_util
 
 from .const import (
     ATTR_BOUNDARY_USED,
+    ATTR_DESTINATION,
+    ATTR_DESTINATION_ID,
     ATTR_DIRECTION,
     ATTR_DURATION,
     ATTR_FROM_AREA,
     ATTR_FROM_AREA_ID,
     ATTR_GATE_NAME,
+    ATTR_GATES,
+    ATTR_ORIGIN,
+    ATTR_ORIGIN_ID,
     ATTR_SENSORS,
     ATTR_STARTED,
     ATTR_TO_AREA,
     ATTR_TO_AREA_ID,
     ATTR_VALUE,
+    ATTR_VIA,
+    ATTR_VIA_IDS,
     DIRECTION_IN_TO_OUT,
     DIRECTION_OUT_TO_IN,
     DIRECTIONS,
     DOMAIN,
+    HUB_DEVICE_NAME,
     KEY_COUNT_IN_TO_OUT,
     KEY_COUNT_OUT_TO_IN,
     KEY_DIRECTION,
+    KEY_LAST_PATH,
     KEY_LAST_TRANSIT,
     KEY_OCCUPANCY,
+    KEY_TOTAL_TRANSITS,
     MANUFACTURER,
     MODEL_AREA,
     MODEL_GATE,
+    MODEL_HUB,
     SERVICE_RESET_COUNTERS,
     SERVICE_RESET_OCCUPANCY,
 )
 from .coordinator import AreaTransitConfigEntry, AreaTransitManager
-from .models import GateConfig, TransitRecord
+from .models import GateConfig, PathRecord, TransitRecord
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -94,6 +109,9 @@ async def async_setup_entry(
     async_add_entities(
         AreaOccupancySensor(manager, area_id) for area_id in manager.monitored_areas
     )
+
+    # Hub summary entities (SPEC 4): one device aggregating cross-gate totals.
+    async_add_entities([HubLastPathSensor(manager), HubTotalTransitsSensor(manager)])
 
     platform = entity_platform.async_get_current_platform()
     platform.async_register_entity_service(
@@ -375,3 +393,136 @@ class AreaOccupancySensor(AreaTransitSensor):
         _LOGGER.info(
             "Occupancy of %s set to %d", self.entity_id, self._attr_native_value
         )
+
+
+class HubSensor(AreaTransitSensor):
+    """Base class of the summary entities attached to the single hub device.
+
+    Unlike gate and area entities, these are not tied to a subentry or to a
+    single monitored area: they aggregate activity across every gate (SPEC 4).
+    """
+
+    def __init__(self, manager: AreaTransitManager, key: str) -> None:
+        """Attach the entity to the hub device, identified by the entry id."""
+        self._manager = manager
+        self._attr_translation_key = key
+        self._attr_unique_id = f"{manager.entry.entry_id}_{key}"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, manager.entry.entry_id)},
+            name=HUB_DEVICE_NAME,
+            manufacturer=MANUFACTURER,
+            model=MODEL_HUB,
+            entry_type=DeviceEntryType.SERVICE,
+        )
+
+
+class HubLastPathSensor(HubSensor):
+    """Timestamp and details of the last completed multi-gate path (SPEC 3, 4).
+
+    A path only exists as the `area_transit_path` bus event until now; this
+    entity is the first place it is also exposed as state.
+    """
+
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+
+    def __init__(self, manager: AreaTransitManager) -> None:
+        """Initialise without any known path."""
+        super().__init__(manager, KEY_LAST_PATH)
+        self._attr_native_value: datetime | None = None
+        self._attr_extra_state_attributes: dict[str, Any] = {}
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the previous path and subscribe to newly completed ones."""
+        await super().async_added_to_hass()
+        if (last_state := await self.async_get_last_state()) is not None and (
+            restored := dt_util.parse_datetime(last_state.state)
+        ) is not None:
+            self._attr_native_value = restored
+            # Attributes are not covered by RestoreSensor, copy the ones we own.
+            self._attr_extra_state_attributes = {
+                key: value
+                for key, value in last_state.attributes.items()
+                if key
+                in (
+                    ATTR_ORIGIN,
+                    ATTR_ORIGIN_ID,
+                    ATTR_DESTINATION,
+                    ATTR_DESTINATION_ID,
+                    ATTR_VIA,
+                    ATTR_VIA_IDS,
+                    ATTR_GATES,
+                    ATTR_STARTED,
+                    ATTR_DURATION,
+                )
+            }
+            _LOGGER.debug("%s restored to %s", self.entity_id, restored)
+
+        self.async_on_remove(self._manager.async_add_path_listener(self._handle_path))
+
+    @callback
+    def _handle_path(self, record: PathRecord) -> None:
+        """Publish the newly completed path."""
+        self._attr_native_value = record.transits[-1].ended
+        self._attr_extra_state_attributes = {
+            ATTR_ORIGIN_ID: record.origin,
+            ATTR_ORIGIN: record.origin_name,
+            ATTR_DESTINATION_ID: record.destination,
+            ATTR_DESTINATION: record.destination_name,
+            ATTR_VIA_IDS: record.via,
+            ATTR_VIA: record.via_names,
+            ATTR_GATES: [transit.gate_name for transit in record.transits],
+            ATTR_STARTED: record.transits[0].started.isoformat(),
+            ATTR_DURATION: round(record.duration, 3),
+        }
+        self.async_write_ha_state()
+
+    async def async_reset_counters(self) -> None:
+        """Clear the last path together with the hub counters (SPEC 5)."""
+        self._attr_native_value = None
+        self._attr_extra_state_attributes = {}
+        self.async_write_ha_state()
+        _LOGGER.info("Last path cleared on %s", self.entity_id)
+
+
+class HubTotalTransitsSensor(HubSensor):
+    """Total number of transits registered across every gate (SPEC 4)."""
+
+    _attr_state_class = SensorStateClass.TOTAL
+
+    def __init__(self, manager: AreaTransitManager) -> None:
+        """Initialise the counter at zero."""
+        super().__init__(manager, KEY_TOTAL_TRANSITS)
+        self._attr_native_value: int = 0
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the previous total and subscribe to every gate's transits."""
+        await super().async_added_to_hass()
+        if (data := await self.async_get_last_sensor_data()) is not None:
+            try:
+                self._attr_native_value = int(data.native_value)  # type: ignore[arg-type]
+            except (TypeError, ValueError):
+                _LOGGER.debug(
+                    "%s had no usable stored value (%s), restarting from 0",
+                    self.entity_id,
+                    data.native_value,
+                )
+            else:
+                _LOGGER.debug(
+                    "%s restored to %d", self.entity_id, self._attr_native_value
+                )
+
+        self.async_on_remove(
+            self._manager.async_add_global_transit_listener(self._handle_transit)
+        )
+
+    @callback
+    def _handle_transit(self, _record: TransitRecord) -> None:
+        """Increment the counter for every transit, on any gate."""
+        self._attr_native_value += 1
+        self.async_write_ha_state()
+
+    async def async_reset_counters(self) -> None:
+        """Handle `area_transit.reset_counters` (SPEC 5) for the hub total."""
+        self._attr_native_value = 0
+        self.async_write_ha_state()
+        _LOGGER.info("Counter %s reset to 0", self.entity_id)

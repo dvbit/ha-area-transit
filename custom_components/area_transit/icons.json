@@ -19,6 +19,12 @@
       },
       "occupancy": {
         "default": "mdi:account-group"
+      },
+      "last_path": {
+        "default": "mdi:map-marker-path"
+      },
+      "total_transits": {
+        "default": "mdi:sigma"
       }
     }
   },

@@ -35,6 +35,10 @@ _LOGGER = logging.getLogger(__name__)
 type TransitListener = Callable[[TransitRecord], None]
 #: Notified with the occupancy delta (+1 / -1) of a specific area.
 type OccupancyListener = Callable[[int], None]
+#: Notified with every validated transit, on any gate (hub totals, SPEC 4).
+type GlobalTransitListener = Callable[[TransitRecord], None]
+#: Notified with every completed multi-gate path (hub last path, SPEC 4).
+type PathListener = Callable[[PathRecord], None]
 
 #: Config entry carrying the manager in its runtime data.
 type AreaTransitConfigEntry = ConfigEntry[AreaTransitManager]
@@ -52,6 +56,10 @@ class AreaTransitManager:
         self._gates: dict[str, GateTracker] = {}
         self._transit_listeners: dict[str, list[TransitListener]] = {}
         self._occupancy_listeners: dict[str, list[OccupancyListener]] = {}
+        # Hub-wide listeners (SPEC 4): every transit / every completed path,
+        # regardless of which gate produced it.
+        self._global_transit_listeners: list[GlobalTransitListener] = []
+        self._path_listeners: list[PathListener] = []
 
         window = float(
             entry.options.get(CONF_INTER_GATE_WINDOW, DEFAULT_INTER_GATE_WINDOW)
@@ -156,12 +164,38 @@ class AreaTransitManager:
 
         return _unsubscribe
 
+    @callback
+    def async_add_global_transit_listener(
+        self, listener: GlobalTransitListener
+    ) -> CALLBACK_TYPE:
+        """Subscribe the hub total-transits entity to every gate (SPEC 4)."""
+        self._global_transit_listeners.append(listener)
+
+        @callback
+        def _unsubscribe() -> None:
+            self._global_transit_listeners.remove(listener)
+
+        return _unsubscribe
+
+    @callback
+    def async_add_path_listener(self, listener: PathListener) -> CALLBACK_TYPE:
+        """Subscribe the hub last-path entity to every completed path (SPEC 4)."""
+        self._path_listeners.append(listener)
+
+        @callback
+        def _unsubscribe() -> None:
+            self._path_listeners.remove(listener)
+
+        return _unsubscribe
+
     # -- event handling ------------------------------------------------------
 
     @callback
     def _handle_transit(self, record: TransitRecord) -> None:
         """Publish a validated transit to entities, bus and chain detector."""
         for listener in list(self._transit_listeners.get(record.gate_id, ())):
+            listener(record)
+        for listener in list(self._global_transit_listeners):
             listener(record)
 
         # Occupancy follows the movement: one person leaves, one arrives.
@@ -173,8 +207,10 @@ class AreaTransitManager:
 
     @callback
     def _handle_path(self, record: PathRecord) -> None:
-        """Publish a completed multi-gate path on the bus (SPEC 3)."""
+        """Publish a completed multi-gate path on the bus (SPEC 3) and hub (SPEC 4)."""
         self.hass.bus.async_fire(EVENT_PATH, record.as_event_data())
+        for listener in list(self._path_listeners):
+            listener(record)
 
     @callback
     def _notify_occupancy(self, area_id: str, delta: int) -> None:

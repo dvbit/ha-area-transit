@@ -100,6 +100,9 @@ KEY_DIRECTION: Final = "direction"
 KEY_COUNT_IN_TO_OUT: Final = "transits_in_to_out"
 KEY_COUNT_OUT_TO_IN: Final = "transits_out_to_in"
 KEY_OCCUPANCY: Final = "occupancy"
+#: Hub summary entities (SPEC 4): last multi-gate path and overall transit count.
+KEY_LAST_PATH: Final = "last_path"
+KEY_TOTAL_TRANSITS: Final = "total_transits"
 
 # --- Services (SPEC 5) ------------------------------------------------------
 
@@ -111,3 +114,6 @@ SERVICE_RESET_COUNTERS: Final = "reset_counters"
 MANUFACTURER: Final = "Area Transit"
 MODEL_GATE: Final = "Gate"
 MODEL_AREA: Final = "Monitored area"
+MODEL_HUB: Final = "Hub"
+#: Name of the single summary device aggregating hub-wide entities (SPEC 4).
+HUB_DEVICE_NAME: Final = "Area Transit Hub"
