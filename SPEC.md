@@ -112,3 +112,9 @@ Both are entity services: they accept an entity, a device (gate, area or hub) or
 * Localisation in English, Italian, French, Spanish and German.
 * README in English and Italian, with usage examples.
 * Representative icon, `hacs.json`, `manifest.json` with an explicit version.
+* Icon assets:
+  * `assets/icon.png` (256x256), referenced by both READMEs;
+  * `custom_components/area_transit/icon.svg`, the vector source;
+  * `custom_components/area_transit/brand/` with `icon.png`, `logo.png`
+    (256x256) and `icon@2x.png`, `logo@2x.png` (512x512), served by the
+    Home Assistant brands proxy API so the integration shows its own icon.
