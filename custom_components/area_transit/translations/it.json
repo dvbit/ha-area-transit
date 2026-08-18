@@ -1,0 +1,162 @@
+{
+  "title": "Area Transit",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Area Transit",
+        "description": "Imposta l'opzione globale. I varchi si aggiungono dopo, dalla pagina dell'integrazione.",
+        "data": {
+          "inter_gate_window": "Finestra tra varchi"
+        },
+        "data_description": {
+          "inter_gate_window": "Tempo massimo tra due transiti su varchi contigui perché siano considerati un unico percorso (da A a C passando per B)."
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Area Transit è già configurata. Aggiungi un nuovo varco alla configurazione esistente."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni globali",
+        "data": {
+          "inter_gate_window": "Finestra tra varchi"
+        },
+        "data_description": {
+          "inter_gate_window": "Tempo massimo tra due transiti su varchi contigui perché siano considerati un unico percorso (da A a C passando per B)."
+        }
+      }
+    }
+  },
+  "config_subentries": {
+    "gate": {
+      "entry_type": "Varco",
+      "initiate_flow": {
+        "user": "Aggiungi varco",
+        "reconfigure": "Riconfigura varco"
+      },
+      "step": {
+        "user": {
+          "title": "Nuovo varco",
+          "description": "Un varco collega due aree. Il transito viene registrato solo se i sensori scattano in ordine: area A, confine (se configurato), area B.",
+          "data": {
+            "name": "Nome",
+            "area_in": "Area A",
+            "area_out": "Area B",
+            "sensor_in": "Sensore di movimento in area A",
+            "sensor_out": "Sensore di movimento in area B",
+            "sensor_boundary": "Sensore di confine",
+            "sequence_timeout": "Timeout sequenza",
+            "cooldown": "Tempo di attesa"
+          },
+          "data_description": {
+            "name": "Usato come nome del dispositivo del varco.",
+            "area_in": "Area sul lato A del varco.",
+            "area_out": "Area sul lato B del varco.",
+            "sensor_in": "Binary sensor che copre l'area A in prossimità del varco.",
+            "sensor_out": "Binary sensor che copre l'area B in prossimità del varco.",
+            "sensor_boundary": "Opzionale. Se configurato diventa obbligatorio nella sequenza: senza il suo scatto nessun transito viene registrato.",
+            "sequence_timeout": "Tempo massimo tra il primo e l'ultimo sensore della sequenza.",
+            "cooldown": "Tempo in cui il varco ignora nuovi eventi dopo un transito registrato, per evitare doppi conteggi."
+          }
+        },
+        "reconfigure": {
+          "title": "Modifica varco",
+          "description": "Un varco collega due aree. Il transito viene registrato solo se i sensori scattano in ordine: area A, confine (se configurato), area B.",
+          "data": {
+            "name": "Nome",
+            "area_in": "Area A",
+            "area_out": "Area B",
+            "sensor_in": "Sensore di movimento in area A",
+            "sensor_out": "Sensore di movimento in area B",
+            "sensor_boundary": "Sensore di confine",
+            "sequence_timeout": "Timeout sequenza",
+            "cooldown": "Tempo di attesa"
+          },
+          "data_description": {
+            "name": "Usato come nome del dispositivo del varco.",
+            "area_in": "Area sul lato A del varco.",
+            "area_out": "Area sul lato B del varco.",
+            "sensor_in": "Binary sensor che copre l'area A in prossimità del varco.",
+            "sensor_out": "Binary sensor che copre l'area B in prossimità del varco.",
+            "sensor_boundary": "Opzionale. Se configurato diventa obbligatorio nella sequenza: senza il suo scatto nessun transito viene registrato.",
+            "sequence_timeout": "Tempo massimo tra il primo e l'ultimo sensore della sequenza.",
+            "cooldown": "Tempo in cui il varco ignora nuovi eventi dopo un transito registrato, per evitare doppi conteggi."
+          }
+        }
+      },
+      "error": {
+        "same_area": "L'area A e l'area B devono essere diverse.",
+        "duplicate_sensor": "Ogni sensore del varco deve essere un'entità diversa."
+      },
+      "abort": {
+        "reconfigure_successful": "Varco aggiornato."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "last_transit": {
+        "name": "Ultimo transito",
+        "state_attributes": {
+          "direction": {
+            "name": "Direzione",
+            "state": {
+              "in_to_out": "Da A a B",
+              "out_to_in": "Da B ad A"
+            }
+          },
+          "from_area": {
+            "name": "Area di partenza"
+          },
+          "to_area": {
+            "name": "Area di arrivo"
+          },
+          "duration": {
+            "name": "Durata"
+          },
+          "sensors": {
+            "name": "Sensori"
+          },
+          "boundary_used": {
+            "name": "Confine utilizzato"
+          }
+        }
+      },
+      "direction": {
+        "name": "Direzione",
+        "state": {
+          "in_to_out": "Da A a B",
+          "out_to_in": "Da B ad A"
+        }
+      },
+      "transits_in_to_out": {
+        "name": "Transiti da A a B"
+      },
+      "transits_out_to_in": {
+        "name": "Transiti da B ad A"
+      },
+      "occupancy": {
+        "name": "Occupazione stimata"
+      }
+    }
+  },
+  "services": {
+    "reset_occupancy": {
+      "name": "Azzera occupazione",
+      "description": "Imposta l'occupazione stimata delle aree selezionate a un valore dato.",
+      "fields": {
+        "value": {
+          "name": "Valore",
+          "description": "Nuovo valore di occupazione. Predefinito 0."
+        }
+      }
+    },
+    "reset_counters": {
+      "name": "Azzera contatori",
+      "description": "Azzera i contatori di transito, l'ultimo transito e la direzione dei varchi selezionati."
+    }
+  }
+}

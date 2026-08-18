@@ -1,0 +1,162 @@
+{
+  "title": "Area Transit",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Area Transit",
+        "description": "Définissez l'option globale. Les passages s'ajoutent ensuite depuis la page de l'intégration.",
+        "data": {
+          "inter_gate_window": "Fenêtre entre passages"
+        },
+        "data_description": {
+          "inter_gate_window": "Durée maximale entre deux transits par des passages contigus pour qu'ils soient considérés comme un seul trajet (de A à C via B)."
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Area Transit est déjà configurée. Ajoutez un nouveau passage à la configuration existante."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options globales",
+        "data": {
+          "inter_gate_window": "Fenêtre entre passages"
+        },
+        "data_description": {
+          "inter_gate_window": "Durée maximale entre deux transits par des passages contigus pour qu'ils soient considérés comme un seul trajet (de A à C via B)."
+        }
+      }
+    }
+  },
+  "config_subentries": {
+    "gate": {
+      "entry_type": "Passage",
+      "initiate_flow": {
+        "user": "Ajouter un passage",
+        "reconfigure": "Reconfigurer le passage"
+      },
+      "step": {
+        "user": {
+          "title": "Nouveau passage",
+          "description": "Un passage relie deux zones. Le transit n'est enregistré que si les capteurs se déclenchent dans l'ordre : zone A, frontière (si configurée), zone B.",
+          "data": {
+            "name": "Nom",
+            "area_in": "Zone A",
+            "area_out": "Zone B",
+            "sensor_in": "Détecteur de mouvement de la zone A",
+            "sensor_out": "Détecteur de mouvement de la zone B",
+            "sensor_boundary": "Capteur de frontière",
+            "sequence_timeout": "Délai de la séquence",
+            "cooldown": "Temps de repos"
+          },
+          "data_description": {
+            "name": "Utilisé comme nom d'appareil du passage.",
+            "area_in": "Zone du côté A du passage.",
+            "area_out": "Zone du côté B du passage.",
+            "sensor_in": "Binary sensor couvrant la zone A à proximité du passage.",
+            "sensor_out": "Binary sensor couvrant la zone B à proximité du passage.",
+            "sensor_boundary": "Facultatif. Une fois configuré, il devient obligatoire dans la séquence : sans son déclenchement, aucun transit n'est enregistré.",
+            "sequence_timeout": "Durée maximale entre le premier et le dernier capteur de la séquence.",
+            "cooldown": "Durée pendant laquelle le passage ignore les nouveaux événements après un transit enregistré, pour éviter les doubles comptages."
+          }
+        },
+        "reconfigure": {
+          "title": "Modifier le passage",
+          "description": "Un passage relie deux zones. Le transit n'est enregistré que si les capteurs se déclenchent dans l'ordre : zone A, frontière (si configurée), zone B.",
+          "data": {
+            "name": "Nom",
+            "area_in": "Zone A",
+            "area_out": "Zone B",
+            "sensor_in": "Détecteur de mouvement de la zone A",
+            "sensor_out": "Détecteur de mouvement de la zone B",
+            "sensor_boundary": "Capteur de frontière",
+            "sequence_timeout": "Délai de la séquence",
+            "cooldown": "Temps de repos"
+          },
+          "data_description": {
+            "name": "Utilisé comme nom d'appareil du passage.",
+            "area_in": "Zone du côté A du passage.",
+            "area_out": "Zone du côté B du passage.",
+            "sensor_in": "Binary sensor couvrant la zone A à proximité du passage.",
+            "sensor_out": "Binary sensor couvrant la zone B à proximité du passage.",
+            "sensor_boundary": "Facultatif. Une fois configuré, il devient obligatoire dans la séquence : sans son déclenchement, aucun transit n'est enregistré.",
+            "sequence_timeout": "Durée maximale entre le premier et le dernier capteur de la séquence.",
+            "cooldown": "Durée pendant laquelle le passage ignore les nouveaux événements après un transit enregistré, pour éviter les doubles comptages."
+          }
+        }
+      },
+      "error": {
+        "same_area": "La zone A et la zone B doivent être différentes.",
+        "duplicate_sensor": "Chaque capteur d'un passage doit être une entité différente."
+      },
+      "abort": {
+        "reconfigure_successful": "Passage mis à jour."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "last_transit": {
+        "name": "Dernier transit",
+        "state_attributes": {
+          "direction": {
+            "name": "Direction",
+            "state": {
+              "in_to_out": "De A vers B",
+              "out_to_in": "De B vers A"
+            }
+          },
+          "from_area": {
+            "name": "Zone de départ"
+          },
+          "to_area": {
+            "name": "Zone d'arrivée"
+          },
+          "duration": {
+            "name": "Durée"
+          },
+          "sensors": {
+            "name": "Capteurs"
+          },
+          "boundary_used": {
+            "name": "Frontière utilisée"
+          }
+        }
+      },
+      "direction": {
+        "name": "Direction",
+        "state": {
+          "in_to_out": "De A vers B",
+          "out_to_in": "De B vers A"
+        }
+      },
+      "transits_in_to_out": {
+        "name": "Transits de A vers B"
+      },
+      "transits_out_to_in": {
+        "name": "Transits de B vers A"
+      },
+      "occupancy": {
+        "name": "Occupation estimée"
+      }
+    }
+  },
+  "services": {
+    "reset_occupancy": {
+      "name": "Réinitialiser l'occupation",
+      "description": "Définit l'occupation estimée des zones ciblées à une valeur donnée.",
+      "fields": {
+        "value": {
+          "name": "Valeur",
+          "description": "Nouvelle valeur d'occupation. 0 par défaut."
+        }
+      }
+    },
+    "reset_counters": {
+      "name": "Réinitialiser les compteurs",
+      "description": "Réinitialise les compteurs de transit, le dernier transit et la direction des passages ciblés."
+    }
+  }
+}

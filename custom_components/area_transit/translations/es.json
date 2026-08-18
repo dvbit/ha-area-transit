@@ -1,0 +1,162 @@
+{
+  "title": "Area Transit",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Area Transit",
+        "description": "Define la opción global. Los pasos se añaden después, desde la página de la integración.",
+        "data": {
+          "inter_gate_window": "Ventana entre pasos"
+        },
+        "data_description": {
+          "inter_gate_window": "Tiempo máximo entre dos tránsitos por pasos contiguos para considerarlos un único recorrido (de A a C pasando por B)."
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Area Transit ya está configurada. Añade un nuevo paso a la configuración existente."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones globales",
+        "data": {
+          "inter_gate_window": "Ventana entre pasos"
+        },
+        "data_description": {
+          "inter_gate_window": "Tiempo máximo entre dos tránsitos por pasos contiguos para considerarlos un único recorrido (de A a C pasando por B)."
+        }
+      }
+    }
+  },
+  "config_subentries": {
+    "gate": {
+      "entry_type": "Paso",
+      "initiate_flow": {
+        "user": "Añadir paso",
+        "reconfigure": "Reconfigurar paso"
+      },
+      "step": {
+        "user": {
+          "title": "Nuevo paso",
+          "description": "Un paso conecta dos áreas. El tránsito se registra solo si los sensores se activan en orden: área A, frontera (si está configurada), área B.",
+          "data": {
+            "name": "Nombre",
+            "area_in": "Área A",
+            "area_out": "Área B",
+            "sensor_in": "Sensor de movimiento del área A",
+            "sensor_out": "Sensor de movimiento del área B",
+            "sensor_boundary": "Sensor de frontera",
+            "sequence_timeout": "Tiempo máximo de secuencia",
+            "cooldown": "Tiempo de espera"
+          },
+          "data_description": {
+            "name": "Se usa como nombre del dispositivo del paso.",
+            "area_in": "Área del lado A del paso.",
+            "area_out": "Área del lado B del paso.",
+            "sensor_in": "Binary sensor que cubre el área A junto al paso.",
+            "sensor_out": "Binary sensor que cubre el área B junto al paso.",
+            "sensor_boundary": "Opcional. Si se configura pasa a ser obligatorio en la secuencia: sin su activación no se registra ningún tránsito.",
+            "sequence_timeout": "Tiempo máximo entre el primer y el último sensor de la secuencia.",
+            "cooldown": "Tiempo durante el cual el paso ignora nuevos eventos tras un tránsito registrado, para evitar recuentos dobles."
+          }
+        },
+        "reconfigure": {
+          "title": "Editar paso",
+          "description": "Un paso conecta dos áreas. El tránsito se registra solo si los sensores se activan en orden: área A, frontera (si está configurada), área B.",
+          "data": {
+            "name": "Nombre",
+            "area_in": "Área A",
+            "area_out": "Área B",
+            "sensor_in": "Sensor de movimiento del área A",
+            "sensor_out": "Sensor de movimiento del área B",
+            "sensor_boundary": "Sensor de frontera",
+            "sequence_timeout": "Tiempo máximo de secuencia",
+            "cooldown": "Tiempo de espera"
+          },
+          "data_description": {
+            "name": "Se usa como nombre del dispositivo del paso.",
+            "area_in": "Área del lado A del paso.",
+            "area_out": "Área del lado B del paso.",
+            "sensor_in": "Binary sensor que cubre el área A junto al paso.",
+            "sensor_out": "Binary sensor que cubre el área B junto al paso.",
+            "sensor_boundary": "Opcional. Si se configura pasa a ser obligatorio en la secuencia: sin su activación no se registra ningún tránsito.",
+            "sequence_timeout": "Tiempo máximo entre el primer y el último sensor de la secuencia.",
+            "cooldown": "Tiempo durante el cual el paso ignora nuevos eventos tras un tránsito registrado, para evitar recuentos dobles."
+          }
+        }
+      },
+      "error": {
+        "same_area": "El área A y el área B deben ser diferentes.",
+        "duplicate_sensor": "Cada sensor de un paso debe ser una entidad distinta."
+      },
+      "abort": {
+        "reconfigure_successful": "Paso actualizado."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "last_transit": {
+        "name": "Último tránsito",
+        "state_attributes": {
+          "direction": {
+            "name": "Dirección",
+            "state": {
+              "in_to_out": "De A a B",
+              "out_to_in": "De B a A"
+            }
+          },
+          "from_area": {
+            "name": "Área de origen"
+          },
+          "to_area": {
+            "name": "Área de destino"
+          },
+          "duration": {
+            "name": "Duración"
+          },
+          "sensors": {
+            "name": "Sensores"
+          },
+          "boundary_used": {
+            "name": "Frontera utilizada"
+          }
+        }
+      },
+      "direction": {
+        "name": "Dirección",
+        "state": {
+          "in_to_out": "De A a B",
+          "out_to_in": "De B a A"
+        }
+      },
+      "transits_in_to_out": {
+        "name": "Tránsitos de A a B"
+      },
+      "transits_out_to_in": {
+        "name": "Tránsitos de B a A"
+      },
+      "occupancy": {
+        "name": "Ocupación estimada"
+      }
+    }
+  },
+  "services": {
+    "reset_occupancy": {
+      "name": "Restablecer ocupación",
+      "description": "Establece la ocupación estimada de las áreas seleccionadas en un valor dado.",
+      "fields": {
+        "value": {
+          "name": "Valor",
+          "description": "Nuevo valor de ocupación. Predeterminado 0."
+        }
+      }
+    },
+    "reset_counters": {
+      "name": "Restablecer contadores",
+      "description": "Restablece los contadores de tránsito, el último tránsito y la dirección de los pasos seleccionados."
+    }
+  }
+}

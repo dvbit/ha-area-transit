@@ -1,0 +1,162 @@
+{
+  "title": "Area Transit",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Area Transit",
+        "description": "Lege die globale Option fest. Übergänge werden anschließend auf der Integrationsseite hinzugefügt.",
+        "data": {
+          "inter_gate_window": "Zeitfenster zwischen Übergängen"
+        },
+        "data_description": {
+          "inter_gate_window": "Maximale Zeit zwischen zwei Durchgängen durch benachbarte Übergänge, damit sie als eine einzige Wegstrecke gelten (von A nach C über B)."
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Area Transit ist bereits eingerichtet. Füge der bestehenden Konfiguration einen neuen Übergang hinzu."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Globale Optionen",
+        "data": {
+          "inter_gate_window": "Zeitfenster zwischen Übergängen"
+        },
+        "data_description": {
+          "inter_gate_window": "Maximale Zeit zwischen zwei Durchgängen durch benachbarte Übergänge, damit sie als eine einzige Wegstrecke gelten (von A nach C über B)."
+        }
+      }
+    }
+  },
+  "config_subentries": {
+    "gate": {
+      "entry_type": "Übergang",
+      "initiate_flow": {
+        "user": "Übergang hinzufügen",
+        "reconfigure": "Übergang neu konfigurieren"
+      },
+      "step": {
+        "user": {
+          "title": "Neuer Übergang",
+          "description": "Ein Übergang verbindet zwei Bereiche. Der Durchgang wird nur erfasst, wenn die Sensoren in dieser Reihenfolge auslösen: Bereich A, Grenze (falls konfiguriert), Bereich B.",
+          "data": {
+            "name": "Name",
+            "area_in": "Bereich A",
+            "area_out": "Bereich B",
+            "sensor_in": "Bewegungsmelder in Bereich A",
+            "sensor_out": "Bewegungsmelder in Bereich B",
+            "sensor_boundary": "Grenzsensor",
+            "sequence_timeout": "Zeitlimit der Sequenz",
+            "cooldown": "Sperrzeit"
+          },
+          "data_description": {
+            "name": "Wird als Gerätename des Übergangs verwendet.",
+            "area_in": "Bereich auf der A-Seite des Übergangs.",
+            "area_out": "Bereich auf der B-Seite des Übergangs.",
+            "sensor_in": "Binary Sensor, der Bereich A am Übergang abdeckt.",
+            "sensor_out": "Binary Sensor, der Bereich B am Übergang abdeckt.",
+            "sensor_boundary": "Optional. Einmal konfiguriert, ist er in der Sequenz zwingend: ohne sein Auslösen wird kein Durchgang erfasst.",
+            "sequence_timeout": "Maximale Zeit zwischen dem ersten und dem letzten Sensor der Sequenz.",
+            "cooldown": "Zeit, in der der Übergang nach einem erfassten Durchgang neue Ereignisse ignoriert, um Doppelzählungen zu vermeiden."
+          }
+        },
+        "reconfigure": {
+          "title": "Übergang bearbeiten",
+          "description": "Ein Übergang verbindet zwei Bereiche. Der Durchgang wird nur erfasst, wenn die Sensoren in dieser Reihenfolge auslösen: Bereich A, Grenze (falls konfiguriert), Bereich B.",
+          "data": {
+            "name": "Name",
+            "area_in": "Bereich A",
+            "area_out": "Bereich B",
+            "sensor_in": "Bewegungsmelder in Bereich A",
+            "sensor_out": "Bewegungsmelder in Bereich B",
+            "sensor_boundary": "Grenzsensor",
+            "sequence_timeout": "Zeitlimit der Sequenz",
+            "cooldown": "Sperrzeit"
+          },
+          "data_description": {
+            "name": "Wird als Gerätename des Übergangs verwendet.",
+            "area_in": "Bereich auf der A-Seite des Übergangs.",
+            "area_out": "Bereich auf der B-Seite des Übergangs.",
+            "sensor_in": "Binary Sensor, der Bereich A am Übergang abdeckt.",
+            "sensor_out": "Binary Sensor, der Bereich B am Übergang abdeckt.",
+            "sensor_boundary": "Optional. Einmal konfiguriert, ist er in der Sequenz zwingend: ohne sein Auslösen wird kein Durchgang erfasst.",
+            "sequence_timeout": "Maximale Zeit zwischen dem ersten und dem letzten Sensor der Sequenz.",
+            "cooldown": "Zeit, in der der Übergang nach einem erfassten Durchgang neue Ereignisse ignoriert, um Doppelzählungen zu vermeiden."
+          }
+        }
+      },
+      "error": {
+        "same_area": "Bereich A und Bereich B müssen unterschiedlich sein.",
+        "duplicate_sensor": "Jeder Sensor eines Übergangs muss eine andere Entität sein."
+      },
+      "abort": {
+        "reconfigure_successful": "Übergang aktualisiert."
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "last_transit": {
+        "name": "Letzter Durchgang",
+        "state_attributes": {
+          "direction": {
+            "name": "Richtung",
+            "state": {
+              "in_to_out": "Von A nach B",
+              "out_to_in": "Von B nach A"
+            }
+          },
+          "from_area": {
+            "name": "Ausgangsbereich"
+          },
+          "to_area": {
+            "name": "Zielbereich"
+          },
+          "duration": {
+            "name": "Dauer"
+          },
+          "sensors": {
+            "name": "Sensoren"
+          },
+          "boundary_used": {
+            "name": "Grenze verwendet"
+          }
+        }
+      },
+      "direction": {
+        "name": "Richtung",
+        "state": {
+          "in_to_out": "Von A nach B",
+          "out_to_in": "Von B nach A"
+        }
+      },
+      "transits_in_to_out": {
+        "name": "Durchgänge von A nach B"
+      },
+      "transits_out_to_in": {
+        "name": "Durchgänge von B nach A"
+      },
+      "occupancy": {
+        "name": "Geschätzte Belegung"
+      }
+    }
+  },
+  "services": {
+    "reset_occupancy": {
+      "name": "Belegung zurücksetzen",
+      "description": "Setzt die geschätzte Belegung der ausgewählten Bereiche auf einen bestimmten Wert.",
+      "fields": {
+        "value": {
+          "name": "Wert",
+          "description": "Neuer Belegungswert. Standardwert 0."
+        }
+      }
+    },
+    "reset_counters": {
+      "name": "Zähler zurücksetzen",
+      "description": "Setzt die Durchgangszähler, den letzten Durchgang und die Richtung der ausgewählten Übergänge zurück."
+    }
+  }
+}
