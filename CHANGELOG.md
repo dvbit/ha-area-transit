@@ -4,6 +4,21 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-08-18
+
+### Changed
+
+- Icon assets aligned with the layout used by the other integrations of this
+  author (SPEC 8):
+  - `assets/icon.png` (256x256) is the artwork referenced by both READMEs;
+  - `custom_components/area_transit/icon.svg` is the vector source, shipped
+    with the integration;
+  - `custom_components/area_transit/brand/` now carries the four sizes the
+    Home Assistant brands proxy API looks for: `icon.png` and `logo.png`
+    (256x256), `icon@2x.png` and `logo@2x.png` (512x512).
+- Removed the repository-root `icon.png` and `logo.png`, superseded by
+  `assets/icon.png`.
+
 ## [1.1.0] - 2026-08-18
 
 ### Added
